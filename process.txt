@@ -1,0 +1,20 @@
+What is the goal?
+
+- Make an HTTP server
+
+What does an HTTP server do?
+
+- Listens on a port for a request
+  - These requests are sent via a transport layer protocol (ex: TCP)
+- Processes those request (like asking for a specific webpage or submitting a form on a webpage)
+- Returns a response containing the requested resource (typically with data like HTML, JSON, JS, etc.)
+
+More specifics about what an HTTP server does:
+
+- Opens a TCP socket on a port (usually port 80 for HTTP)
+- Waits for a client (browser) to connect and send a request
+- Parses the request to get all of the information out of it and understand what the client wants
+- Fetches/generates the response (could just be a static HTML file from a disk)
+- Puts the response into HTTP response form and sends it back (sending it back with a status code, the content type, and the content)
+
+- Functions like listen and bind use system calls under the hood

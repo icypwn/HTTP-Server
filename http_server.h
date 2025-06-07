@@ -1,16 +1,20 @@
-#include <string>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <iostream>
+
+using namespace std;
 
 class TcpHTTPServer {
   public:
-    TcpHTTPServer(std::string ip_address, int port); // Constructor
+    TcpHTTPServer(string ip_address, int port); // Constructor
     // ~TcpServer(); // Destructor
   private:
     int server_port;
-    int server_ip_address;
+    string server_ip_address;
     int server_socket;
+    int client_socket;
 
-    void startListening();
+    void startListening(int limit);
+    void log(string message);
 
-}
+};

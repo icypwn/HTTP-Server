@@ -1,13 +1,6 @@
 #include "http_server.h"
 
-#include <string>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-
-#include <iostream>
-
-TcpHTTPServer::TcpHTTPServer(std::string ip_address, int port) {
-
+TcpHTTPServer::TcpHTTPServer(string ip_address, int port) {
 
   // Set class variables 
   server_ip_address = ip_address;
@@ -26,30 +19,37 @@ TcpHTTPServer::TcpHTTPServer(std::string ip_address, int port) {
   // This assigns the local address (IP & Port) we specified to the server socket so we can listen on it
   bind(server_socket, (struct sockaddr*)&server_address, sizeof(server_address));
 
-  std::cout << "About to start listening.";
-
   // Start listening on the server socket
-  listen(server_socket, 5);
 
-  std::cout << "Listening done.";
+  log("TCP Socket successfully opened");
 
-  // Exract the first connection on the queue
-  client_socket = accept(server_socket, nullptr, nullptr);
-
-  // Recieve data from the client in a buffer
-  char client_data[1024] = {0};
-  recv(client_socket, buffer, sizeof(buffer), 0); // Recieves the data from this socket
-
-  std::cout << "Message from client: " << buffer << std::endl;
-
-  // Close the socket
-  close(server_socket);
-
-  return 0;
+  startListening(5);
 
 }
 
 // Waits for requests to comes in and puts them into a queue
-void TcpHTTPServer::startListening() {
+void TcpHTTPServer::startListening(int limit) {
+  listen(server_socket, limit);
+  cout << "Listening to " << server_ip_address << " on port " << server_port << endl;
+}
 
+void TcpHTTPServer::log(string message) {
+  cout << message << endl;
+}
+
+// Recieves the most recent message from the queue
+void TcpHTTPServer::recieve() {
+
+  // Exract the first connection on the queue (Will empty page if it's empty)
+  client_socket = accept(server_socket, nullptr, nullptr);
+
+  // Recieve data from the client in a buffer
+  char client_data[1024] = {0};
+  recv(client_socket, client_data, sizeof(client_data), 0); // Recieves the data from this socket
+
+  cout << "Message from client: " << client_data << endl;
+
+  // Close the socket
+  shutdown(server_socket, SHUT_RDWR);
+  
 }

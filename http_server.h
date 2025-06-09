@@ -7,6 +7,10 @@ using namespace std;
 class TcpHTTPServer {
   public:
     TcpHTTPServer(string ip_address, int port); // Constructor
+    void startListening(int limit);
+    int recieve();
+    void respond(int status_code);
+    
     // ~TcpServer(); // Destructor
   private:
     int server_port;
@@ -14,7 +18,6 @@ class TcpHTTPServer {
     int server_socket;
     int client_socket;
 
-    void startListening(int limit);
     void log(string message);
 
 };

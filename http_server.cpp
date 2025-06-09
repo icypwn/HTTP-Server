@@ -23,8 +23,6 @@ TcpHTTPServer::TcpHTTPServer(string ip_address, int port) {
 
   log("TCP Socket successfully opened");
 
-  startListening(5);
-
 }
 
 // Waits for requests to comes in and puts them into a queue
@@ -38,18 +36,32 @@ void TcpHTTPServer::log(string message) {
 }
 
 // Recieves the most recent message from the queue
-void TcpHTTPServer::recieve() {
+int TcpHTTPServer::recieve() {
 
   // Exract the first connection on the queue (Will empty page if it's empty)
   client_socket = accept(server_socket, nullptr, nullptr);
 
   // Recieve data from the client in a buffer
   char client_data[1024] = {0};
-  recv(client_socket, client_data, sizeof(client_data), 0); // Recieves the data from this socket
-
-  cout << "Message from client: " << client_data << endl;
-
-  // Close the socket
-  shutdown(server_socket, SHUT_RDWR);
+  if(recv(client_socket, client_data, sizeof(client_data), 0)) {
+    cout << "Message from client: " << endl << client_data;
+    return 1;
+  }
+  else {
+    cout << "No data recieved yet." << endl;
+    return 0;
+  }
   
+}
+
+void TcpHTTPServer::respond(int status_code) {
+  // Send data back to the client in a buffer
+  if(status_code == 200) {
+  char server_response[1024] = " HTTP/1.1 200 OK Content-Type: text/plain Content-length: 2 OK";
+  send(server_socket, server_response, sizeof(server_response), 0);
+  }
+  else {
+    cout << "Unknown Response: (Code " << status_code << ")" << endl;
+  }
+
 }
